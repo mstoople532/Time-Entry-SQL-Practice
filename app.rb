@@ -53,4 +53,10 @@ class TimeEntryTest < Minitest::Test
     sql = "SELECT clients.name, projects.name FROM clients LEFT JOIN projects ON clients.id = projects.client_id"
     assert_equal 33, db.execute(sql).length
   end
+
+  def test_find_all_developers_with_no_comments
+    db = SQLite3::Database.new "time_entries.sqlite3"
+    sql = "SELECT developers.name, comments.comment FROM developers LEFT JOIN comments ON developers.id = comments.developer_id WHERE comments.comment IS NULL"
+    assert_equal 13, db.execute(sql).length
+  end
 end
