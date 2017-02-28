@@ -41,4 +41,10 @@ class TimeEntryTest < Minitest::Test
     sql = "SELECT SUM(duration), clients.name FROM time_entries INNER JOIN projects ON time_entries.project_id = projects.id INNER JOIN clients ON projects.client_id = clients.id GROUP BY clients.id"
     assert_equal [238, "Goodwin Group"], db.execute(sql).last
   end
+
+  def test_client_lupe_worked_most_hours_for
+    db = SQLite3::Database.new "time_entries.sqlite3"
+    sql = "SELECT SUM(duration), developers.name, clients.name FROM developers INNER JOIN time_entries ON developers.id = time_entries.developer_id INNER JOIN projects ON time_entries.project_id = projects.id INNER JOIN clients ON projects.client_id = clients.id WHERE developers.name = 'Mrs. Lupe Schowalter' GROUP BY clients.id ORDER BY SUM(duration) DESC LIMIT 1"
+    assert_equal [[11, "Mrs. Lupe Schowalter", "Kuhic-Bartoletti"]], db.execute(sql)
+  end
 end
