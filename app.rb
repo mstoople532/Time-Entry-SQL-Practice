@@ -73,4 +73,13 @@ class TimeEntryTest < Minitest::Test
     comments ON developers.id = comments.developer_id WHERE comments.comment IS NULL"
     assert_equal 13, db.execute(sql).length
   end
+
+  def test_find_all_developers_with_at_least_five_comments
+    db = SQLite3::Database.new "time_entries.sqlite3"
+    sql = "SELECT developers.name FROM developers LEFT JOIN
+    comments ON developers.id = comments.developer_id WHERE comments.developer_id GROUP BY comments.developer_id HAVING COUNT (*) >= 5 "
+    assert_equal [["Joelle Hermann"]], db.execute(sql)
+
+  end
+
 end
