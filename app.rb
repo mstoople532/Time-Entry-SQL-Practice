@@ -29,4 +29,10 @@ class TimeEntryTest < Minitest::Test
     sql = "SELECT clients.name, time_entries.id, developer_id, project_id, worked_on, duration, time_entries.created_at, time_entries.updated_at FROM time_entries INNER JOIN projects ON time_entries.project_id = projects.id INNER JOIN clients ON projects.client_id = clients.id"
     assert_equal ["Goodwin Group", 500, 50, 30, "2014-09-22", 4, "2015-07-14 16:15:19.621743", "2015-07-14 16:15:19.621743"], db.execute(sql).last
   end
+
+  def test_all_Ohio_Sheep_developers
+    db = SQLite3::Database.new "time_entries.sqlite3"
+    sql = "SELECT developers.name FROM developers INNER JOIN group_assignments ON developers.id = group_assignments.developer_id INNER JOIN groups ON group_assignments.group_id = groups.id WHERE groups.name='Ohio sheep'"
+    assert_equal [["Bruce Wisoky Jr."], ["Eli Wunsch MD"], ["Reyes Vandervort IV"]], db.execute(sql)
+  end
 end
