@@ -77,9 +77,17 @@ class TimeEntryTest < Minitest::Test
   def test_find_all_developers_with_at_least_five_comments
     db = SQLite3::Database.new "time_entries.sqlite3"
     sql = "SELECT developers.name FROM developers LEFT JOIN
-    comments ON developers.id = comments.developer_id WHERE comments.developer_id GROUP BY comments.developer_id HAVING COUNT (*) >= 5 "
+    comments ON developers.id = comments.developer_id WHERE comments.developer_id
+    GROUP BY comments.developer_id HAVING COUNT (*) >= 5 "
     assert_equal [["Joelle Hermann"]], db.execute(sql)
+  end
 
+  def test_find
+    db = SQLite3::Database.new "time_entries.sqlite3"
+    sql = "SELECT SUM(duration), developers.name FROM time_entries INNER JOIN
+    developers ON time_entries.developer_id = developers.id WHERE worked_on
+    BETWEEN '2015-01-01' AND '2015-01-31'GROUP BY developer_id ORDER BY SUM(duration) LIMIT 1"
+    assert_equal "", db.execute(sql)
   end
 
 end
